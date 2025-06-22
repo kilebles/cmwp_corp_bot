@@ -5,6 +5,8 @@ from aiogram.client.default import DefaultBotProperties
 from app.cmwp_corp_bot.settings import config
 from app.cmwp_corp_bot.handlers import start
 from app.cmwp_corp_bot.handlers import back
+from app.cmwp_corp_bot.handlers import get_consultation
+from app.cmwp_corp_bot.handlers import analitic_reports
 
 bot = Bot(
     token=config.BOT_TOKEN,
@@ -14,3 +16,5 @@ dp = Dispatcher(storage=MemoryStorage())
 
 dp.include_router(start.router)
 dp.include_router(back.router)
+dp.include_router(get_consultation.router)
+dp.include_router(analitic_reports.router)
