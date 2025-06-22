@@ -3,7 +3,7 @@ import asyncio
 from contextlib import suppress
 from aiogram.types import Message, ReplyKeyboardRemove
 
-from cmwp_corp_bot.presentation.keyboards.simple_kb import phone_request_kb, main_menu_kb
+from app.cmwp_corp_bot.presentation.keyboards.simple_kb import phone_request_kb, main_menu_kb
 
 
 

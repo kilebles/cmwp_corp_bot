@@ -3,7 +3,7 @@ from aiogram.filters import CommandStart
 from aiogram.types import Message
 from typing import AsyncGenerator
 
-from cmwp_corp_bot.services.registration_sevice import registration_dialog
+from app.cmwp_corp_bot.services.registration_sevice import registration_dialog
 
 
 router = Router()

@@ -1,7 +1,7 @@
 from aiogram import Router, F
 from aiogram.types import CallbackQuery
 
-from cmwp_corp_bot.presentation.keyboards.simple_kb import analitic_reports
+from app.cmwp_corp_bot.presentation.keyboards.simple_kb import analitic_reports
 
 router = Router()
 
