@@ -10,7 +10,7 @@ router = Router()
 async def show_contacts(callback: CallbackQuery):
     await callback.message.delete() 
     await callback.message.answer(
-        'Выберите опцию:',
+        'Выберите опцию:',  # Место под slug
         reply_markup=main_menu_kb
     )
     await callback.answer()
