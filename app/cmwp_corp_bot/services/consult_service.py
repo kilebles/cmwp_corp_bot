@@ -1,23 +1,57 @@
-from sqlalchemy import select
-from app.cmwp_corp_bot.db.models import User
-from app.cmwp_corp_bot.db.repo import get_session
-from app.cmwp_corp_bot.services.smtp_service import send_consult_email
+from aiosmtplib import send
+from email.message import EmailMessage
+from app.cmwp_corp_bot.settings import config
 
 
-async def notify_managers(tg_id: int, ctx: str) -> None:
-    async with get_session() as s:
-        user: User | None = await s.scalar(
-            select(User).where(User.tg_id == tg_id)
-        )
-        if not user:
-            return
+async def send_consult_email(
+    full_name: str,
+    tg_link: str,
+    phone: str,
+    company: str,
+    context_text: str,
+) -> None:
+    msg = EmailMessage()
+    msg["From"] = config.SMTP_USER
+    msg["To"] = config.EMAIL_ADRESS
+    msg["Subject"] = f"Запрос консультации от {full_name}"
 
-        tg_link = f"tg://user?id={tg_id}"
+    body = f"""\
+        site^^
+        og-bot.cmwp.ru
+        ^^^^
 
-        await send_consult_email(
-            full_name=user.full_name,
-            tg_link=tg_link,
-            phone=user.phone or "—",
-            company=user.company or "—",
-            context_text=ctx,
-        )
+        form-name^^
+        plan
+        ^^^^
+
+        name^^
+        {full_name}
+        ^^^^
+
+        phone^^
+        {phone}
+        ^^^^
+
+        profile_tg^^
+        {tg_link}
+        ^^^^
+
+        company^^
+        {company}
+        ^^^^
+
+        comment^^
+        {context_text}
+        ^^^^
+        """
+
+    msg.set_content(body)
+
+    await send(
+        msg,
+        hostname="smtp.gmail.com",
+        port=587,
+        username=config.SMTP_USER,
+        password=config.SMTP_PASS,
+        start_tls=True,
+    )
