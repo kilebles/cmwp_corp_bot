@@ -8,8 +8,11 @@ from app.cmwp_corp_bot.db.models import MenuButton, Section, MediaKind
 from app.cmwp_corp_bot.db.repo import get_session
 
 
-async def get_active_buttons(section: Section) -> List[MenuButton]:
+async def get_active_buttons(section: Section | str) -> List[MenuButton]:
     """Возвращает активные кнопки указанного раздела, отсортированные по order."""
+    if isinstance(section, Section):
+        section = section.value
+
     async with get_session() as session:
         result = await session.scalars(
             select(MenuButton)
