@@ -6,7 +6,7 @@ from django.utils.translation import gettext_lazy as _
 
 
 class Section(models.TextChoices):
-    MAIN_REPORT = "MAIN_REPORT", _("Кнопки главного меню (отчёт)")   # ← новое
+    MAIN_REPORT = "MAIN_REPORT", _("Кнопки главного меню")
     MARKETBEAT = "MARKETBEAT", _("Ежеквартальный отчет MARKETBEAT")
     SEGMENT = "SEGMENT", _("Обзоры по сегментам рынка")
     ANALYTICS = "ANALYTICS", _("Услуги компании")
