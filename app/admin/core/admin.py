@@ -1,4 +1,4 @@
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.contrib.admin import SimpleListFilter
 from django.utils.translation import gettext_lazy as _
 from .models import Content, MenuButton, User, Mailing, MailingSend, ButtonClick, Section
@@ -102,17 +102,6 @@ class MailingAdmin(admin.ModelAdmin):
     list_display = ("id", "created_at", "media_kind", "preview")
     ordering = ("-created_at",)
     inlines = (MailingSendInline,)
-
-    @admin.display(description=_("Сообщение"))
-    def preview(self, obj):
-        return (obj.text[:60] + "…") if obj.text and len(obj.text) > 60 else obj.text or "—"
-    
-
-@admin.register(Mailing)
-class MailingAdmin(admin.ModelAdmin):
-    list_display = ("id", "created_at", "media_kind", "preview")
-    ordering = ("-created_at",)
-    inlines = (MailingSendInline,)
     actions = ["send_mailing"]
 
     @admin.display(description=_("Сообщение"))
@@ -127,7 +116,7 @@ class MailingAdmin(admin.ModelAdmin):
                 self.message_user(request, f"Рассылка {mailing.id} отправлена", messages.SUCCESS)
             except Exception as e:
                 self.message_user(request, f"Ошибка в рассылке {mailing.id}: {e}", messages.ERROR)
-
+    
 
 from django.contrib.auth.models import Group, User as AuthUser
 admin.site.unregister(Group)

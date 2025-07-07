@@ -1,6 +1,5 @@
 from aiosmtplib import send
 from email.message import EmailMessage
-
 from app.cmwp_corp_bot.settings import config
 
 
@@ -16,19 +15,37 @@ async def send_consult_email(
     msg["To"] = config.EMAIL_ADRESS
     msg["Subject"] = f"Запрос консультации от {full_name}"
 
-    html = f"""
-    <h3>💬 Запрос консультации</h3>
-    <p><b>Имя:</b> {full_name}<br>
-    <b>Телефон:</b> {phone or "—"}<br>
-    <b>Компания:</b> {company or "—"}<br>
-    <b>Профиль TG:</b> <a href="{tg_link}">{tg_link}</a></p>
-    <hr>
-    <h4>Сообщение клиента:</h4>
-    <pre>{context_text}</pre>
-    """
+    body = f"""\
+        site^^
+        og-bot.cmwp.ru
+        ^^^^
 
-    msg.set_content("Ваш почтовый клиент не поддерживает HTML-формат.")
-    msg.add_alternative(html, subtype="html")
+        form-name^^
+        plan
+        ^^^^
+
+        name^^
+        {full_name}
+        ^^^^
+
+        phone^^
+        {phone}
+        ^^^^
+
+        profile_tg^^
+        {tg_link}
+        ^^^^
+
+        company^^
+        {company}
+        ^^^^
+
+        comment^^
+        {context_text}
+        ^^^^
+        """
+
+    msg.set_content(body)
 
     await send(
         msg,
