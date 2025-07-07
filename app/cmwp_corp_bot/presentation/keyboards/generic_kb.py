@@ -6,7 +6,7 @@ from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from app.cmwp_corp_bot.db.models import Section
 from app.cmwp_corp_bot.services.button_service import get_active_buttons
 
-BACK_BUTTON = InlineKeyboardButton(text="↩ Назад", callback_data="back")
+BACK_BUTTON = InlineKeyboardButton(text="↩", callback_data="back")
 
 
 async def build_keyboard(
