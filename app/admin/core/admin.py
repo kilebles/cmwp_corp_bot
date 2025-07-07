@@ -1,6 +1,7 @@
 from django.contrib import admin
+from django.contrib.admin import SimpleListFilter
 from django.utils.translation import gettext_lazy as _
-from .models import Content, MenuButton, User, Mailing, MailingSend
+from .models import Content, MenuButton, User, Mailing, MailingSend, ButtonClick, Section
 
 
 @admin.register(Content)
@@ -18,7 +19,7 @@ class ContentAdmin(admin.ModelAdmin):
 @admin.register(MenuButton)
 class MenuButtonAdmin(admin.ModelAdmin):
     list_display = ("section", "order", "label", "media_kind", "media_url", "link_url", "is_active")
-    list_editable = ("order",)                                 # ← is_active убрали
+    list_editable = ("order",)
     list_filter = ("section", "media_kind", "is_active")
     search_fields = ("label", "callback", "description")
     ordering = ("section", "order")
@@ -31,11 +32,61 @@ class MenuButtonAdmin(admin.ModelAdmin):
     )
 
 
+class ButtonClickInline(admin.TabularInline):
+    model = ButtonClick
+    extra = 0
+    can_delete = False
+    ordering = ("-ts",)
+
+    fields = ("button_label", "section", "ts")
+    readonly_fields = fields
+
+    @admin.display(description="Кнопка")
+    def button_label(self, obj: ButtonClick) -> str:
+        return obj.button.label
+
+    @admin.display(description="Раздел")
+    def section(self, obj: ButtonClick) -> str:
+        return obj.button.get_section_display()
+    
+    
+class ClickedSectionFilter(SimpleListFilter):
+    title = "Заходил в раздел"
+    parameter_name = "clicked_section"
+
+    def lookups(self, request, model_admin):
+        return Section.choices
+
+    def queryset(self, request, qs):
+        if self.value():
+            return qs.filter(clicks__button__section=self.value()).distinct()
+        return qs
+
+
+class ClickedButtonFilter(SimpleListFilter):
+    title = "Нажимал кнопку"
+    parameter_name = "clicked_button"
+
+    def lookups(self, request, model_admin):
+        return [(b.id, b.label) for b in MenuButton.objects.order_by("label")]
+
+    def queryset(self, request, qs):
+        if self.value():
+            return qs.filter(clicks__button_id=self.value()).distinct()
+        return qs
+
+
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ("full_name", "company", "position", "email", "phone", "created_at")
-    search_fields = ("full_name", "company", "position", "email", "phone")
+    list_display = ("full_name", "company", "position",
+                    "email", "phone", "created_at")
+    search_fields = ("full_name", "company", "position",
+                     "email", "phone")
     ordering = ("-created_at",)
+
+    list_filter = (ClickedSectionFilter, ClickedButtonFilter)
+
+    inlines = (ButtonClickInline,)
 
 
 class MailingSendInline(admin.TabularInline):

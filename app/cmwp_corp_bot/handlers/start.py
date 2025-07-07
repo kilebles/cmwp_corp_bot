@@ -33,12 +33,20 @@ async def temp_warn(msg: Message, text: str, delay: float = 3) -> None:
 @router.message(CommandStart())
 async def start_registration(message: Message, state: FSMContext) -> None:
     await state.clear()
+    menu_kb = await main_menu_kb()
 
     if await user_exists(message.from_user.id):
-        await render(message, slug='меню', reply_markup=main_menu_kb)
+        await render(
+            message=message,
+            slug="menu",
+            reply_markup=menu_kb,
+        )
         return
 
-    await message.render(message, slug='Регистрация')
+    await render(
+        message=message,
+        slug="registration",
+    )
     await state.set_state(Registration.full_name)
 
 
@@ -87,6 +95,7 @@ async def reg_email(msg: Message, state: FSMContext) -> None:
 
     await state.update_data(email=msg.text.strip())
     data = await state.get_data()
+    menu_kb = await main_menu_kb()
 
     await save_registration(
         {
@@ -108,5 +117,5 @@ async def reg_email(msg: Message, state: FSMContext) -> None:
         f"📱 Телефон: {data['phone']}"
     )
 
-    await msg.answer(reply, reply_markup=main_menu_kb)
+    await msg.answer(reply, reply_markup=menu_kb)
     await state.clear()

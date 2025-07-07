@@ -6,15 +6,16 @@ from django.utils.translation import gettext_lazy as _
 
 
 class Section(models.TextChoices):
-    MARKETBEAT = "marketbeat", _("Ежеквартальный отчет MARKETBEAT")
-    SEGMENT = "segment", _("Обзоры по сегментам рынка")
-    ANALYTICS = "analytics", _("Аналитические отчёты")
+    MAIN_REPORT = "MAIN_REPORT", _("Кнопки главного меню (отчёт)")   # ← новое
+    MARKETBEAT = "MARKETBEAT", _("Ежеквартальный отчет MARKETBEAT")
+    SEGMENT = "SEGMENT", _("Обзоры по сегментам рынка")
+    ANALYTICS = "ANALYTICS", _("Услуги компании")
 
 
 class MediaKind(models.TextChoices):
-    NONE = "none", _("Нет")
-    PHOTO = "photo", _("Фото")
-    VIDEO = "video", _("Видео")
+    NONE = "NONE", _("Нет")
+    PHOTO = "PHOTO", _("Фото")
+    VIDEO = "VIDEO", _("Видео")
 
 
 class SendStatus(models.TextChoices):
@@ -41,13 +42,21 @@ class Content(models.Model):
 
 
 class MenuButton(models.Model):
-    section = models.CharField(_("Раздел"), max_length=10, choices=Section.choices)
+    section = models.CharField(_("Раздел"), max_length=15, choices=Section.choices)
     order = models.PositiveIntegerField(_("Порядковый номер"), default=0)
     label = models.CharField(_("Текст кнопки"), max_length=120)
     description = models.TextField(_("Описание"), blank=True)
     media_kind = models.CharField(_("Медиа"), max_length=5, choices=MediaKind.choices, default=MediaKind.NONE)
     media_url = models.URLField(_("URL медиа"), blank=True)
-    link_url = models.URLField(_("Ссылка на отчёт/сообщение"), blank=True)
+    link_url = models.TextField(
+        _("Ссылка или текст сообщения"),
+        blank=True,
+        help_text=_(
+            "Для MARKETBEAT — URL отчёта;"
+            "Для Сегментов — ничего;"
+            "для консультаций — текст."
+        ),
+    )
 
     content = models.ForeignKey(
         Content,
