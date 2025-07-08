@@ -119,7 +119,7 @@ class MailingAdmin(admin.ModelAdmin):
                     _(f"Рассылка {mailing.id} отправлена."),
                     messages.SUCCESS,
                 )
-            except Exception as exc:           # noqa: BLE001
+            except Exception as exc:
                 self.message_user(
                     request,
                     _(f"Ошибка в рассылке {mailing.id}: {exc}"),
