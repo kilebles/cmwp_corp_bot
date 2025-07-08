@@ -106,16 +106,25 @@ class MailingAdmin(admin.ModelAdmin):
 
     @admin.display(description=_("Сообщение"))
     def preview(self, obj):
-        return (obj.text[:60] + "…") if obj.text and len(obj.text) > 60 else obj.text or "—"
+        txt = obj.text or "—"
+        return (txt[:60] + "…") if len(txt) > 60 else txt
 
-    @admin.action(description="Отправить выбранные рассылки")
+    @admin.action(description=_("Отправить выбранные рассылки"))
     def send_mailing(self, request, queryset):
         for mailing in queryset:
             try:
                 send_broadcast_by_id(mailing.id)
-                self.message_user(request, f"Рассылка {mailing.id} отправлена", messages.SUCCESS)
-            except Exception as e:
-                self.message_user(request, f"Ошибка в рассылке {mailing.id}: {e}", messages.ERROR)
+                self.message_user(
+                    request,
+                    _(f"Рассылка {mailing.id} отправлена."),
+                    messages.SUCCESS,
+                )
+            except Exception as exc:           # noqa: BLE001
+                self.message_user(
+                    request,
+                    _(f"Ошибка в рассылке {mailing.id}: {exc}"),
+                    messages.ERROR,
+                )
     
 
 from django.contrib.auth.models import Group, User as AuthUser
