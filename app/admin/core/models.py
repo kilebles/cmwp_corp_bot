@@ -9,7 +9,7 @@ class Section(models.TextChoices):
     MAIN_REPORT = "MAIN_REPORT", _("Кнопки главного меню")
     MARKETBEAT = "MARKETBEAT", _("Ежеквартальный отчет MARKETBEAT")
     SEGMENT = "SEGMENT", _("Обзоры по сегментам рынка")
-    SEGMENT_DETAIL = "SEGMENT_DETAIL", _("Даты по сегментам")
+    SEGMENT_DETAIL = "SEGMENT_DETAIL", _("Дополнительные кнопки")
     ANALYTICS = "ANALYTICS", _("Услуги компании")
 
 

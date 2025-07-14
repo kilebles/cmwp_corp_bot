@@ -81,18 +81,13 @@ async def dynamic_button(callback: CallbackQuery):
     with suppress(Exception):
         await callback.message.delete()
 
-    if button.section == Section.SEGMENT:
-        from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-        from app.cmwp_corp_bot.presentation.keyboards.generic_kb import BACK_BUTTON
-        from app.cmwp_corp_bot.services.button_service import get_segment_detail_buttons
+    from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+    from app.cmwp_corp_bot.presentation.keyboards.generic_kb import BACK_BUTTON
+    from app.cmwp_corp_bot.services.button_service import get_segment_detail_buttons
 
-        children = await get_segment_detail_buttons(button.id)  # <-- вот тут заменили
+    children = await get_segment_detail_buttons(button.id)
 
-        if not children:
-            await callback.message.answer("Нет обзоров", reply_markup=InlineKeyboardMarkup(inline_keyboard=[[BACK_BUTTON]]))
-            await callback.answer("Нет обзоров", show_alert=True)
-            return
-
+    if children:
         rows = [
             [InlineKeyboardButton(text=child.label, url=child.link_url)]
             for child in children

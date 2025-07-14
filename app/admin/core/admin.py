@@ -23,8 +23,8 @@ class SegmentDetailInline(admin.TabularInline):
     extra = 1
     fields = ("label", "order", "link_url", "is_active")
     readonly_fields = ("is_active",)
-    verbose_name = "Год"
-    verbose_name_plural = "Обзоры по годам"
+    verbose_name = "Дополнительная кнопка"
+    verbose_name_plural = "Дополнительная кнопка"
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
