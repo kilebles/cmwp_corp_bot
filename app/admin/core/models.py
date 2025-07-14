@@ -9,6 +9,7 @@ class Section(models.TextChoices):
     MAIN_REPORT = "MAIN_REPORT", _("Кнопки главного меню")
     MARKETBEAT = "MARKETBEAT", _("Ежеквартальный отчет MARKETBEAT")
     SEGMENT = "SEGMENT", _("Обзоры по сегментам рынка")
+    SEGMENT_DETAIL = "SEGMENT_DETAIL", _("Даты по сегментам")
     ANALYTICS = "ANALYTICS", _("Услуги компании")
 
 
@@ -48,15 +49,26 @@ class MenuButton(models.Model):
     description = models.TextField(_("Описание"), blank=True)
     media_kind = models.CharField(_("Медиа"), max_length=5, choices=MediaKind.choices, default=MediaKind.NONE)
     media_url = models.URLField(_("URL медиа"), blank=True)
+    parent = models.ForeignKey(
+        "self",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="children",
+        verbose_name=_("Родительская кнопка"),
+        help_text=_("Для SEGMENT_DETAIL — выберите родителя из SEGMENT"),
+    )
     link_url = models.TextField(
         _("Ссылка или текст сообщения"),
         blank=True,
         help_text=_(
             "Для MARKETBEAT — URL отчёта;"
-            "Для Сегментов — URL отчёта;"
+            "Для Сегментов — Кнопки с датами;"
+            "Для Дат по сегментам — URL обзора;"
             "Для консультаций — текст;"
             "Для главного меню — оставить пустым."
         ),
+
     )
 
     content = models.ForeignKey(

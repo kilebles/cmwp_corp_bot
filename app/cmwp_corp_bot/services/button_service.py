@@ -53,11 +53,11 @@ def detail_keyboard(button: MenuButton) -> InlineKeyboardMarkup:
             )
         ])
 
-    if button.section == Section.SEGMENT and button.link_url:
+    if button.section == Section.SEGMENT:
         rows.append([
             InlineKeyboardButton(
-                text="📄 Посмотреть обзор",
-                url=button.link_url,
+                text="📄 Посмотреть обзоры",
+                callback_data=f"segment_{button.callback}",
             )
         ])
 
@@ -89,3 +89,18 @@ async def show_button_detail(message: Message, button: MenuButton):
 
     await message.answer(text, reply_markup=detail_keyboard(button),
                          parse_mode="HTML")
+    
+    
+async def get_segment_detail_buttons(parent_id: int) -> list[MenuButton]:
+    """Возвращает дочерние кнопки для обзоров по сегменту (SEGMENT_DETAIL)."""
+    async with get_session() as session:
+        result = await session.scalars(
+            select(MenuButton)
+            .where(
+                MenuButton.section == Section.SEGMENT_DETAIL,
+                MenuButton.is_active.is_(True),
+                MenuButton.parent_id == parent_id
+            )
+            .order_by(MenuButton.order)
+        )
+        return list(result)

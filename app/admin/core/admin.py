@@ -17,6 +17,20 @@ class ContentAdmin(admin.ModelAdmin):
         return (obj.text[:60] + "…") if obj.text and len(obj.text) > 60 else obj.text or "—"
 
 
+class SegmentDetailInline(admin.TabularInline):
+    model = MenuButton
+    fk_name = "parent"
+    extra = 1
+    fields = ("label", "order", "link_url", "is_active")
+    readonly_fields = ("is_active",)
+    verbose_name = "Год"
+    verbose_name_plural = "Обзоры по годам"
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.filter(section="SEGMENT_DETAIL")
+    
+
 @admin.register(MenuButton)
 class MenuButtonAdmin(admin.ModelAdmin):
     list_display = ("section", "order", "label", "media_kind", "media_url", "link_url", "is_active")
@@ -27,10 +41,17 @@ class MenuButtonAdmin(admin.ModelAdmin):
     readonly_fields = ("callback", "is_active", "created_at", "updated_at")
 
     fieldsets = (
-        (None, {"fields": ("section", "order", "label")}),
+        (None, {"fields": ("section", "order", "label", "parent")}),
         (_("Контент"), {"fields": ("description", "media_kind", "media_url", "link_url")}),
         (_("Системное"), {"fields": ("callback", "created_at", "updated_at"), "classes": ("collapse",)}),
     )
+
+    inlines = [SegmentDetailInline]
+
+    def get_inline_instances(self, request, obj=None):
+        if obj and obj.section == "SEGMENT":
+            return super().get_inline_instances(request, obj)
+        return []
 
 
 class ButtonClickInline(admin.TabularInline):

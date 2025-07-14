@@ -10,6 +10,7 @@ class Section(str, enum.Enum):
     MAIN_REPORT = "main_report"
     MARKETBEAT = "marketbeat"
     SEGMENT = "segment"
+    SEGMENT_DETAIL = "segment_detail"
     ANALYTICS = "analytics"
 
 
@@ -27,6 +28,7 @@ class SendStatus(str, enum.Enum):
 
 class Content(Base):
     __tablename__ = "contents"
+    
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
     slug: Mapped[str] = mapped_column(Text, unique=True)
     text: Mapped[str] = mapped_column(Text)
@@ -39,6 +41,7 @@ class Content(Base):
 
 class MenuButton(Base):
     __tablename__ = "menu_buttons"
+    
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
     section: Mapped[Section] = mapped_column(Enum(Section, name="section"), default=Section.MARKETBEAT)
     order: Mapped[int] = mapped_column(Integer, default=0)
@@ -49,12 +52,16 @@ class MenuButton(Base):
     link_url: Mapped[str | None] = mapped_column(Text)
     callback: Mapped[str] = mapped_column(Text, unique=True, default=lambda: str(uuid.uuid4()))
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
+
     content_id: Mapped[int | None] = mapped_column(ForeignKey("contents.id"))
+    parent_id: Mapped[int | None] = mapped_column(ForeignKey("menu_buttons.id"))
 
     created_at: Mapped[dt.datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at: Mapped[dt.datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
     content: Mapped["Content"] = relationship("Content", back_populates="buttons")
+
+    parent: Mapped["MenuButton"] = relationship("MenuButton", remote_side="MenuButton.id", backref="children")
 
 
 class User(Base):
