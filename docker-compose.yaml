@@ -19,19 +19,19 @@ services:
     container_name: pg_cmwp_corp
     restart: always
     ports:
-      - "5423:5432"
+      - "5433:5432"
     env_file:
       - .env
     volumes:
       - pgdata:/var/lib/postgresql/data
 
-  django_admin:
+  django_corp_admin:
     build: .
-    container_name: django_admin
+    container_name: django_corp_admin
     command: >
       python app/admin/manage.py runserver 0.0.0.0:8001
     ports:
-      - "8001:8001"
+      - "8099:8001"
     env_file:
       - .env
     environment:
