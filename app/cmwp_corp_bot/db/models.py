@@ -7,7 +7,7 @@ from app.cmwp_corp_bot.db.session import Base
 
 
 class Section(str, enum.Enum):
-    MAIN_REPORT = "main_report"
+    MAIN_REPORT = "MAIN_REPORT"
     MARKETBEAT = "marketbeat"
     SEGMENT = "segment"
     SEGMENT_DETAIL = "segment_detail"

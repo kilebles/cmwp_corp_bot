@@ -63,7 +63,7 @@ def upgrade() -> None:
     )
     op.create_table('menu_buttons',
     sa.Column('id', sa.BigInteger(), autoincrement=True, nullable=False),
-    sa.Column('section', sa.Enum('MARKETBEAT', 'SEGMENT', 'ANALYTICS', name='section'), nullable=False),
+    sa.Column('section', sa.Enum('MAIN_REPORT', 'MARKETBEAT', 'SEGMENT', 'ANALYTICS', name='section'), nullable=False),
     sa.Column('order', sa.Integer(), nullable=False),
     sa.Column('label', sa.Text(), nullable=False),
     sa.Column('description', sa.Text(), nullable=False),
