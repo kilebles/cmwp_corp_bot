@@ -17,11 +17,11 @@ async def send_consult_email(
 
     body = f"""\
         site^^
-        og-bot.cmwp.ru
+        cmwp-bot.cmwp.ru
         ^^^^
 
         form-name^^
-        plan
+        consultation
         ^^^^
 
         name^^

@@ -56,21 +56,21 @@ async def reg_full_name(msg: Message, state: FSMContext) -> None:
         await temp_warn(msg, "❌ Введите корректное ФИО (только кириллица)")
         return
     await state.update_data(full_name=msg.text.strip())
-    await msg.answer("Введите название компании:")
+    await msg.answer("Какую компанию вы представляете?")
     await state.set_state(Registration.company)
 
 
 @router.message(Registration.company)
 async def reg_company(msg: Message, state: FSMContext) -> None:
     await state.update_data(company=msg.text.strip())
-    await msg.answer("Введите вашу должность:")
+    await msg.answer("Укажите, пожалуйста, вашу должность:")
     await state.set_state(Registration.position)
 
 
 @router.message(Registration.position)
 async def reg_position(msg: Message, state: FSMContext) -> None:
     await state.update_data(position=msg.text.strip())
-    await msg.answer("Введите номер телефона:", reply_markup=phone_request_kb)
+    await msg.answer("Укажите ваш номер телефона:", reply_markup=phone_request_kb)
     await state.set_state(Registration.phone)
 
 
@@ -83,14 +83,14 @@ async def reg_phone(msg: Message, state: FSMContext) -> None:
         await temp_warn(msg, "❌ Номер должен быть в формате +7XXXXXXXXXX")
         return
     await state.update_data(phone=phone)
-    await msg.answer("Введите email:", reply_markup=ReplyKeyboardRemove())
+    await msg.answer("Укажите ваш Email:", reply_markup=ReplyKeyboardRemove())
     await state.set_state(Registration.email)
 
 
 @router.message(Registration.email)
 async def reg_email(msg: Message, state: FSMContext) -> None:
     if not is_valid_email(msg.text):
-        await temp_warn(msg, "❌ Введите корректный email")
+        await temp_warn(msg, "❌ Укажите корректный Email")
         return
 
     await state.update_data(email=msg.text.strip())
